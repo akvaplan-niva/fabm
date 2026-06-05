@@ -9,6 +9,8 @@ module akvaplan_model_library
    use akvaplan_plume_injection
    use akvaplan_tracer_sed
    use akvaplan_antiparasitic
+   use akvaplan_surfacelayer_input
+   use akvaplan_imidacloprid
 
    implicit none
 
@@ -33,6 +35,8 @@ contains
          case ('plume_injection'); allocate(type_plume_injection::model)
          case ('tracer_sed');      allocate(type_tracer_sed::model)
          case ('antiparasitic');   allocate(type_antiparasitic::model)
+         case ('surfacelayer_input');   allocate(type_surfacelayer_input::model)
+         case ('imidacloprid');    allocate(type_imidacloprid::model)
          ! Add new models here
          case default
             call self%type_base_model_factory%create(name,model)
