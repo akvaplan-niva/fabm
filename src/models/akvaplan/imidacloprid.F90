@@ -89,8 +89,11 @@ contains
       call self%register_dependency(self%id_T,standard_variables%temperature)
       call self%register_dependency(self%id_shear,  standard_variables%bottom_stress)
       call self%register_dependency(self%id_dswr,standard_variables%downwelling_shortwave_flux)
-      call self%register_dependency(self%id_h,standard_variables%cell_thickness)
-      call self%register_dependency(self%id_max_dt,standard_variables%maximum_time_step)
+
+      if (self%do_sed) then  
+        call self%register_dependency(self%id_h,standard_variables%cell_thickness)
+        call self%register_dependency(self%id_max_dt,standard_variables%maximum_time_step)
+      end if
 
       ! Density hook based on specific volume and density of the tracer.
       call self%get_parameter(sp_vol,  'specific_volume', 'm3 quantity-1', 'specific volume', default=0.0_rk)
