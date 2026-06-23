@@ -15,7 +15,7 @@ module akvaplan_surfacelayer_input
       type (type_surface_dependency_id)    :: id_flux_in
       type (type_dependency_id)            :: id_centre_depth, id_layer_thickness 
       type (type_diagnostic_variable_id)   :: id_flux_out, id_layer_thickness_diag
-      type (type_surface_diagnostic_variable_id)   :: id_flux_in_diag
+      type (type_diagnostic_variable_id)   :: id_flux_in_diag
 
       ! Parameters
       real(rk) :: d ! Target depth over which to split the flux
@@ -44,7 +44,7 @@ contains
       call self%register_diagnostic_variable(self%id_flux_out,'flux_out','quantity m-3 s-1','depth-explicit flux output')
 
       ! Add extra diagnostics
-      call self%register_surface_diagnostic_variable(self%id_flux_in_diag,'flux_in_diag','quantity m-3 s-1','depth-explicit flux input')
+      call self%register_diagnostic_variable(self%id_flux_in_diag,'flux_in_diag','quantity m-3 s-1','depth-explicit flux input')
       call self%register_diagnostic_variable(self%id_layer_thickness_diag,'layer_thickness_diag','m','layer thickness')
 
    end subroutine initialize
@@ -58,13 +58,11 @@ contains
       _LOOP_BEGIN_
          _GET_(self%id_centre_depth,centre_depth)
          _GET_(self%id_layer_thickness,layer_thickness)
-
+         _GET_SURFACE_(self%id_flux_in,flux_in)
          if (self%d>(centre_depth-0.5*layer_thickness) .and. self%d<=(centre_depth+0.5*layer_thickness)) then
-            _GET_SURFACE_(self%id_flux_in,flux_in)
             adj_thickness = self%d - (centre_depth-0.5*layer_thickness)
             _SET_DIAGNOSTIC_(self%id_flux_out,(flux_in*(adj_thickness/self%d))/layer_thickness)
          else if (self%d>(centre_depth-0.5*layer_thickness)) then
-            _GET_SURFACE_(self%id_flux_in,flux_in)
             _SET_DIAGNOSTIC_(self%id_flux_out,(flux_in*(layer_thickness/self%d))/layer_thickness) 
          else
             _SET_DIAGNOSTIC_(self%id_flux_out,0)
